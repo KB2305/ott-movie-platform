@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}Watch Later{% endblock %}
+{% block body %}
+<div class="container text-white mt-5">
+  <h2>Watch Later List</h2>
+  <div class="row">
+    {% for entry in items %}
+      <div class="col-md-3">
+        <div class="card bg-dark text-white mb-4">
+          <img src="{% static 'Posters/' %}{{ entry.movie.poster }}" class="card-img-top">
+          <div class="card-body">
+            <h5 class="card-title">{{ entry.movie.name }}</h5>
+            <a href="{% url 'moviepage' id=entry.movie.id %}" class="btn btn-primary">View</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

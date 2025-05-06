@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        font-family: Arial, sans-serif;
+        background-color: #000;
+    }
+
+    .video-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    #video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        pointer-events: none;
+    }
+
+    .custom-play-button {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 80px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+        padding: 20px 30px;
+        cursor: pointer;
+        z-index: 10;
+        transition: 0.3s ease;
+    }
+
+    .custom-play-button:hover {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    .series-details {
+        padding: 40px;
+        background: #111;
+        color: #fff;
+        line-height: 1.6;
+    }
+
+    .series-details h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    .series-details p {
+        font-size: 1.2rem;
+        margin-bottom: 20px;
+    }
+
+    .series-details ul {
+        list-style-type: none;
+        padding: 0;
+        font-size: 1rem;
+    }
+
+    .series-details li {
+        margin-bottom: 10px;
+    }
+
+    .season-dropdown {
+        background-color: #222;
+        color: #fff;
+        padding: 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+
+    .episode-list {
+        background-color: #333;
+        padding: 10px;
+        border-radius: 5px;
+        color: #fff;
+        font-size: 1rem;
+    }
+
+    .episode-list li {
+        margin-bottom: 10px;
+        cursor: pointer;
+    }
+
+    .episode-list li:hover {
+        background-color: #444;
+    }
+
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="video-container">
+    <video id="video" preload="metadata" crossorigin="anonymous">
+        <source src="{% static 'Series/' %}{{ series.path }}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div class="custom-play-button" id="playButton">&#9658;</div>
+</div>
+
+<div class="series-details">
+    <h1>{{ series.title }}</h1>
+    <p>{{ series.detail }}</p>
+    <ul>
+        <li><strong>Director:</strong> {{ series.director }}</li>
+        <li><strong>Starring:</strong> {{ series.cast }}</li>
+        <li><strong>Genre:</strong> {{ series.genre }}</li>
+        <li><strong>Language:</strong> {{ series.language }}</li>
+        <li><strong>Country:</strong> {{ series.country }}</li>
+    </ul>
+
+    <!-- Dropdown for Seasons -->
+    <div class="season-dropdown" id="seasonDropdown">
+        Select Season
+    </div>
+
+    <!-- List of Episodes under the selected Season -->
+    <div class="episode-list" id="episodeList" style="display: none;">
+        <ul id="episodes">
+            {% for season in series.seasons.all %}
+                <li>
+                    <strong>Season {{ season.season_number }}</strong>
+                    <ul>
+                        {% for episode in season.episodes.all %}
+                            <li><a href="{% url 'episode_page' id=episode.id %}">{{ episode.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<script>
+    const playButton = document.getElementById('playButton');
+    const video = document.getElementById('video');
+    const seasonDropdown = document.getElementById('seasonDropdown');
+    const episodeList = document.getElementById('episodeList');
+
+    playButton.addEventListener('click', function () {
+        video.play();
+        video.setAttribute('controls', 'controls');
+        playButton.style.display = 'none';
+        video.style.pointerEvents = 'auto';
+    });
+
+    // Toggle season dropdown and episodes
+    seasonDropdown.addEventListener('click', function () {
+        episodeList.style.display = episodeList.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Optional: Keyboard shortcuts for skip
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowRight') {
+            video.currentTime += 10;
+        } else if (e.key === 'ArrowLeft') {
+            video.currentTime -= 10;
+        }
+    });
+</script>
+{% endblock %}

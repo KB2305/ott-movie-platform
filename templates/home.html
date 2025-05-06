@@ -1,0 +1,219 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Home - OTT Platform
+{% endblock title %}
+
+{% block head %}
+<style>
+  img {
+    width: 100%;
+    height: 500px;
+  }
+
+  .carousal {
+    margin-top: 20px;
+  }
+
+  .movies {
+    color: antiquewhite;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  h3 {
+    margin: 4mm;
+  }
+
+  h6 {
+    text-align: end;
+    margin: 10px;
+  }
+
+  .flexlist-wrapper {
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+    padding: 10px;
+    border: 1px solid #696969;
+    border-radius: 8px;
+    margin: 10px;
+    scrollbar-width: none;
+  }
+
+  .flexlist-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+
+  .flexlist {
+    display: flex;
+    flex-wrap: nowrap;
+  }
+
+  .cards {
+    flex: 0 0 auto;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card {
+    width: 18rem;
+    margin: 0.5rem;
+    height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #1e1e2f;
+    color: #f0f0f0;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease;
+  }
+
+  .card:hover {
+    transform: scale(1.02);
+  }
+
+  .card a,
+  .cards a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card-img-top {
+    height: 250px;
+    object-fit: cover;
+    width: 100%;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 3em;
+  }
+
+  .card-details {
+    font-size: 0.85rem;
+    color: #ccc;
+  }
+</style>
+{% endblock head %}
+
+{% block body %}
+<!-- CAROUSAL -->
+<div class="container-fluid">
+  <div class="carousal">
+    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
+      </div>
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="static\iron_man_1.jpeg" class="d-block" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="static\insidious.jpeg" class="d-block" alt="...">
+        </div>
+        <div class="carousel-item">
+          <img src="static\znmd.jpeg" class="d-block" alt="...">
+        </div>
+      </div>
+      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+{% if request.GET.q %}
+    <h4 class="text-white px-4">Search results for "{{ request.GET.search }}"</h4>
+{% endif %}
+
+{% if history %}
+<div class="movies">
+  <h3>Watch History</h3>
+  <div class="flexlist-wrapper">
+    <div class="flexlist">
+      {% for entry in history %}
+      <div class="cards">
+        <a href="{% url 'moviepage' id=entry.movie.id %}">
+          <div class="card">
+            <img src="{% static 'Posters/' %}{{ entry.movie.poster }}" class="card-img-top">
+            <div class="card-body">
+              <h5 class="card-title">{{ entry.movie.name }}</h5>
+              <p class="card-details">{{ entry.movie.genre }} | {{ entry.movie.duration }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- CUSTOM MOVIES -->
+<div class="movies">
+  <h3>Movies:</h3>
+  <div class="flexlist-wrapper">
+    <div class="flexlist">
+      {% for movie in movies|slice:":6" %}
+      <div class="cards">
+        <a href="{% url 'moviepage' id=movie.id %}">
+          <div class="card">
+            <img src="{% if movie.poster %}{% static 'Posters/' %}{{ movie.poster }}{% else %}{% static 'Posters/default.jpg' %}{% endif %}" class="card-img-top" alt="{{ movie.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ movie.name }}</h5>
+              <p class="card-details">{{ movie.genre }} | {{ movie.duration }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<h6><a href="/movies">View more</a></h6>
+
+<!-- LANGUAGE-WISE MOVIES -->
+<div class="movies">
+  {% for mov_lan in language_wise_data %}
+  <h3>Top Movies in {{ mov_lan.language }}</h3>
+  <div class="flexlist-wrapper">
+    <div class="flexlist">
+      {% for movie in mov_lan.data|slice:":6" %}
+      <div class="cards">
+        <a href="{% url 'moviepage' id=movie.id %}">
+          <div class="card">
+            <img src="{% if movie.poster %}{% static 'Posters/' %}{{ movie.poster }}{% else %}{% static 'Posters/default.jpg' %}{% endif %}" class="card-img-top" alt="{{ movie.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ movie.name }}</h5>
+              <p class="card-details">{{ movie.genre }} | {{ movie.duration }}</p>
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock body %}

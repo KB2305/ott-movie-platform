@@ -1,0 +1,148 @@
+{% load static%}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %} {% endblock title %} </title>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+        crossorigin="anonymous">
+    {% block head %} {% endblock head %}
+    
+    <style>
+        html, body {
+            width: 100%;
+            overflow-x: hidden; /* Prevents horizontal scrolling */
+            margin: 0; /* Ensure no margin is added by default */
+        }
+        
+        body {
+            background-color: #141e30;
+            position: relative;
+        }
+        
+        .navbar {
+            width: 100%;
+        }
+        
+        .container-fluid {
+            max-width: 100%; /* Ensures the container doesn't overflow */
+        }
+        
+        .button_profile {
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            background-color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 18px;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .button_profile img {
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+        }
+        
+        /* Ensure all other elements like navbar and dropdown fit properly */
+        .dropdown-menu {
+            background-color: #222;
+            border-radius: 8px;
+            min-width: 200px;
+        }
+        
+        .dropdown-item {
+            color: #f0f0f0;
+            padding: 12px 16px;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #444;
+        }
+        
+        .pagination {
+            align-items: baseline;
+            position: fixed;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+    </style>        
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-dark" style="height: 2cm;">
+    
+    <div class="container-fluid" style="font-size: larger;">
+        <a class="navbar-brand" href="/" style="color: antiquewhite;">BingeBox</a>
+            <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse"
+                id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="/home" style="color: antiquewhite;">Home</a>
+                </li>
+                <li class="nav-item">
+                        <a class="nav-link" href="/movies"
+                            style="color: antiquewhite;">Movies</a>
+                </li>
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="/series" style="color: antiquewhite;">Series</a>
+                </li> -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle"  role="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: antiquewhite">
+                      Dropdown
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% for genre in genre_list %}
+                      <li><a class="dropdown-item" href="{% url 'genre_list' id=genre.id %}"> {{ genre.name }} </a></li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                </ul>
+                <form method="get" class="d-flex" action="{% url 'movies' %}" role="search">
+                    {% csrf_token %}
+
+                    <input class="form-control me-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn btn-outline-success"
+                        type="submit">Search</button>
+                </form>
+                 <!-- Profile button with image -->
+                 <div class="dropdown">
+                    <button class="button_profile" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="{% static 'profile.jpeg' %}" alt="Profile" class="rounded-circle">
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown" style="right: 0; left: auto;">
+                        <li><span class="dropdown-item-text text-muted">{{ request.session.email }}</span></li>
+                        <li><a class="dropdown-item" href="/account">Your Account</a></li>
+                        <li><a class="dropdown-item" href="/watchlater">Watch Later</a></li>
+                        <li><a class="dropdown-item" href="/ask_provide">You Ask We Provide</a></li>
+                        <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% block body %}
+    {% endblock body %}
+
+</body>
+</html>

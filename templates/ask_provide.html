@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}You Ask, We Deliver{% endblock %}
+
+{% block body %}
+<div class="container mt-5 text-white">
+  <h2>You Ask, We Deliver</h2>
+  <p>Suggest a movie and we'll consider adding it!</p>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="movie_name" class="form-label">Movie Name</label>
+      <input type="text" class="form-control" id="movie_name" name="movie_name" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+</div>
+{% endblock %}

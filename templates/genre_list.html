@@ -1,0 +1,144 @@
+{%extends 'base.html'%}
+{% load static %}
+
+{% block title %}
+
+{% endblock title %}
+
+
+{% block head %}
+<style>
+  /* Base styles for the page */
+  .movies {
+    color: antiquewhite;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  .flexlist {
+    display: grid; /* Use grid layout for better control */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Automatically adjust the number of columns based on screen size */
+    gap: 20px; /* Space between cards */
+    padding: 10px; /* Padding around the grid */
+    border-radius: 8px;
+    /* border: 1px solid #ccc; */
+    background-color:  #141e30; /* Dark background for contrast */
+    text-decoration: none; /* Removes underline from links inside the card */
+    color: inherit; /* Inherit color from parent element */
+  }
+  .cards{
+    flex: 0 0 auto;
+    text-decoration: none; /* Removes underline from links inside the card */
+    color: inherit; /* Inherit color from parent element */
+  }
+  .card {
+    height: 340px; /* Fixed height for each card */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #1e1e2f; /* Darker background for cards */
+    border-radius: 8px;
+    overflow: hidden; /* Prevents content from spilling out */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition on hover */
+    text-decoration: none; /* Removes underline from links inside the card */
+    color: inherit; /* Inherit color from parent element */
+  }
+
+  .card:hover {
+    transform: translateY(-5px); /* Lifts the card on hover */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Adds shadow on hover */
+  }
+
+  .card-img-top {
+    width: 100%;
+    height: 250px; /* Fixed height for the image */
+    object-fit: cover; /* Ensures the image fills the card without stretching */
+  }
+
+  .card-body {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .card-title {
+    font-size: 1.1rem;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-decoration: none; /* No underlines for movie title */
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  
+  .card a,
+  .cards a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .card-details {
+    font-size: 0.9rem;
+    color: #bbb; /* Lighter color for other details */
+    margin-bottom: 10px;
+  }
+
+  .card-duration, .card-genre {
+    color: #aaa; /* Lighter color for genre and duration */
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+  }
+
+  h6 {
+    text-align: end;
+    margin: 20px;
+    color: white;
+    font-weight: normal;
+  }
+
+  /* Ensure no underlines for anchor tags inside cards */
+
+  /* Make the page responsive */
+  @media (max-width: 768px) {
+    .flexlist {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .card {
+      height: 350px; /* Adjust card height for smaller screens */
+    }
+  }
+</style>
+{% endblock head %}
+
+{% block body %}
+
+
+<div class="movies">
+  <div class="flexlist">
+    {% for movie in movies %}
+    <div class="d-flex flex-row mb-3">
+      <div class="cards">
+        <a href="{% url 'moviepage' id=movie.id %}">
+
+          <div class="card" style="width: 18rem;">
+
+            <img
+              src="{% if movie.poster %}{% static 'Posters/' %}{{ movie.poster }}{% else %}{% static 'Posters/default.jpg' %}{% endif %}"
+              class="card-img-top"
+              alt="{{ movie.name }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ movie.name }}</h5>
+              <p class="card-duration">Duration: {{ movie.duration }} </p>
+
+            </div>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+    </div>
+{% endblock body%}
