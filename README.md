@@ -131,6 +131,7 @@ Use the superuser credentials created earlier.
 - 🚧 "You Ask, We Provide" form not functional  
 - ✅ Movie filtering, streaming, and OTP login functional
 -   Add two folders in static folder 1) Movies 2) poster and store accordingly
+-   Add you Email id to send otp at ottProject/settings.py, line 139
 ---
 
 ## 🧰 Tech Stack
